@@ -29,7 +29,9 @@ export class FetchComponent implements OnInit {
   }
 
   onClearPosts(){
-    
+    this.postService.deletePosts().subscribe(()=>{
+      this.loadPosts = [];
+    });
   }
 
   private fetchPosts(){

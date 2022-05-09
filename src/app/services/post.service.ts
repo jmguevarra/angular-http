@@ -5,21 +5,22 @@ import { Post } from "../post.model";
 
 @Injectable({ providedIn: 'root'})
 export class PostService{
-
+    postsUrl = 'https://ngfirebase-enedb-default-rtdb.asia-southeast1.firebasedatabase.app/posts.json';
+    
     constructor(private http: HttpClient){
 
     }
 
     createPost(postData: Post){
         this.http
-        .post('https://ngfirebase-enedb-default-rtdb.asia-southeast1.firebasedatabase.app/posts.json', postData)
+        .post(this.postsUrl, postData)
         .subscribe((response)=>{ 
           console.log(response);
         });
     }
 
     fetchPosts(){
-        return this.http.get<{[key: string]: Post}>('https://ngfirebase-enedb-default-rtdb.asia-southeast1.firebasedatabase.app/posts.json')
+        return this.http.get<{[key: string]: Post}>(this.postsUrl)
         .pipe(map(responseData => {
           const postArray: Post[] = [];
           for(const key in responseData){
@@ -29,5 +30,9 @@ export class PostService{
           }
           return postArray;
         }));
+    }
+
+    deletePosts(){
+        return this.http.delete(this.postsUrl);
     }
 }
