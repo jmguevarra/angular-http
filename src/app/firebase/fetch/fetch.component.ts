@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { map } from 'rxjs/operators';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 import { Post } from 'src/app/post.model';
 import { PostService } from 'src/app/services/post.service';
@@ -10,14 +10,24 @@ import { PostService } from 'src/app/services/post.service';
   templateUrl: './fetch.component.html',
   styleUrls: ['./fetch.component.css']
 })
-export class FetchComponent implements OnInit {
+export class FetchComponent implements OnInit, OnDestroy {
   loadPosts = [];
   isFetching = false;
+  errorMessage = null;
+  private errorSub: Subscription;
 
   constructor(private http: HttpClient, private postService: PostService) { }
 
   ngOnInit(): void {
+    this.errorSub = this.postService.errorMessage.subscribe(message => {
+      this.errorMessage = message;
+    });
+
     this.fetchPosts();
+  }
+
+  ngOnDestroy(): void {
+    this.errorSub.unsubscribe();
   }
 
   onCreatePost(postData: Post){
@@ -39,6 +49,8 @@ export class FetchComponent implements OnInit {
     this.postService.fetchPosts().subscribe(posts => {
       this.loadPosts = posts;
       this.isFetching = false;
+    }, error => {
+      this.errorMessage = error.message;
     });
   }
 

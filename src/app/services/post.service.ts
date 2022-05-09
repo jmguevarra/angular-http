@@ -1,11 +1,12 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { map } from "rxjs";
+import { map, Subject } from "rxjs";
 import { Post } from "../post.model";
 
 @Injectable({ providedIn: 'root'})
 export class PostService{
     postsUrl = 'https://ngfirebase-enedb-default-rtdb.asia-southeast1.firebasedatabase.app/posts.json';
+    errorMessage = new Subject<string>();
     
     constructor(private http: HttpClient){
 
@@ -14,8 +15,10 @@ export class PostService{
     createPost(postData: Post){
         this.http
         .post(this.postsUrl, postData)
-        .subscribe((response)=>{ 
+        .subscribe(response =>{ 
           console.log(response);
+        }, error => {
+            this.errorMessage.next(error.message);
         });
     }
 
