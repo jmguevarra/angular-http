@@ -48,8 +48,7 @@ export class FetchComponent implements OnInit {
       return postArray;
     }))
     .subscribe(posts => {
-      //   ....
-      console.log(posts);
+      this.loadPosts = posts;
     });
   }
 
