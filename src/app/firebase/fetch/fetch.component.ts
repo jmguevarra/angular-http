@@ -54,4 +54,9 @@ export class FetchComponent implements OnInit, OnDestroy {
     });
   }
 
+  onHandleError(){
+    this.isFetching = false;
+    this.errorMessage = null;
+  }
+
 }
